@@ -1,11 +1,7 @@
 package com.zhong.mapper;
 
 import com.zhong.pojo.Category;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-
+import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
@@ -36,10 +32,27 @@ public interface CategoryMapper {
     Category findById(Integer id);
 
     /**
+     * 根据分类名称和用户ID查询分类
+     * @param categoryName 分类名称
+     * @param userId 用户ID
+     * @return 分类对象
+     */
+    @Select("SELECT * FROM category WHERE category_name = #{categoryName} AND create_user = #{userId}")
+    Category findByNameAndUserId(@Param("categoryName") String categoryName, @Param("userId") Integer userId);
+
+    /**
      * 更新分类信息
      * @param category 分类对象
      */
     @Update("UPDATE category SET category_name = #{categoryName}, category_alias = #{categoryAlias}, " +
             "update_time = now() WHERE id = #{id}")
     void update(Category category);
+
+    /**
+     * 根据分类名称和用户ID删除分类
+     * @param categoryName 分类名称
+     * @param userId 用户ID
+     */
+    @Delete("DELETE FROM category WHERE category_name = #{categoryName} AND create_user = #{userId}")
+    void deleteByNameAndUserId(@Param("categoryName") String categoryName, @Param("userId") Integer userId);
 }

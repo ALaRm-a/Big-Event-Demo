@@ -20,6 +20,7 @@ import java.util.Map;
 @RequestMapping("/user")
 @Validated
 @Slf4j
+@CrossOrigin
 public class UserController {
 
     @Autowired

@@ -3,6 +3,7 @@ package com.zhong.controller;
 import com.zhong.pojo.Category;
 import com.zhong.service.CategoryService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/category")
 @Validated
 @Slf4j
+@CrossOrigin
 public class CategoryController {
 
     @Autowired
@@ -90,6 +92,25 @@ public class CategoryController {
             return Result.success();
         } catch (Exception e) {
             log.error("文章分类更新失败: {}", e.getMessage());
+            return Result.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 根据分类名称删除分类
+     * @param categoryName 分类名称
+     * @return 操作结果
+     */
+    @DeleteMapping
+    public Result deleteCategory(@RequestParam @NotEmpty(message = "分类名称不能为空") String categoryName) {
+        log.info("删除文章分类，分类名称: {}", categoryName);
+
+        try {
+            categoryService.deleteCategoryByName(categoryName);
+            log.info("文章分类删除成功");
+            return Result.success();
+        } catch (Exception e) {
+            log.error("文章分类删除失败: {}", e.getMessage());
             return Result.error(e.getMessage());
         }
     }

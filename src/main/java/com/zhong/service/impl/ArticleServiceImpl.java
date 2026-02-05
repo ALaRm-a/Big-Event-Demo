@@ -57,4 +57,24 @@ public class ArticleServiceImpl implements ArticleService {
 
         return pageBean;
     }
+
+    @Override
+    public void deleteArticle(Integer id) {
+        // 从ThreadLocal中获取用户信息
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer userId = (Integer) claims.get("id");
+
+        // 验证文章是否存在且属于当前用户
+        Article article = articleMapper.findById(id);
+        if (article == null) {
+            throw new RuntimeException("文章不存在");
+        }
+
+        if (!article.getCreateUser().equals(userId)) {
+            throw new RuntimeException("无权删除该文章");
+        }
+
+        // 调用Mapper删除数据
+        articleMapper.deleteByIdAndUserId(id, userId);
+    }
 }

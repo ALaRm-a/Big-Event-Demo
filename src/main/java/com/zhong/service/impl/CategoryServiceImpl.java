@@ -1,5 +1,6 @@
 package com.zhong.service.impl;
 
+import com.zhong.mapper.ArticleMapper;
 import com.zhong.mapper.CategoryMapper;
 import com.zhong.pojo.Category;
 import com.zhong.service.CategoryService;
@@ -15,6 +16,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+
+    @Autowired
+    private ArticleMapper articleMapper;
 
     @Override
     public void addCategory(Category category) {
@@ -81,5 +85,27 @@ public class CategoryServiceImpl implements CategoryService {
 
         // 调用Mapper更新数据
         categoryMapper.update(category);
+    }
+
+    @Override
+    public void deleteCategoryByName(String categoryName) {
+        // 从ThreadLocal中获取用户信息
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer userId = (Integer) claims.get("id");
+
+        // 验证分类是否存在且属于当前用户
+        Category category = categoryMapper.findByNameAndUserId(categoryName, userId);
+        if (category == null) {
+            throw new RuntimeException("分类不存在或无权删除");
+        }
+
+        // 检查该分类下是否有文章
+        Integer articleCount = articleMapper.countByCategoryId(category.getId(), userId);
+        if (articleCount != null && articleCount > 0) {
+            throw new RuntimeException("该分类下有 " + articleCount + " 篇文章，无法删除。请先删除或转移文章。");
+        }
+
+        // 调用Mapper删除数据
+        categoryMapper.deleteByNameAndUserId(categoryName, userId);
     }
 }

@@ -19,6 +19,7 @@ import java.util.UUID;
 @RequestMapping("/article")
 @Validated
 @Slf4j
+@CrossOrigin(origins = "*")
 public class ArticleController {
 
     @Autowired
@@ -48,6 +49,14 @@ public class ArticleController {
         }
     }
 
+    /**
+     *  根据前台的页面大小，页面显示的数量，文章分类和状态来获取文章列表
+     * @param pageNum 页码
+     * @param pageSize 每页大小
+     * @param categoryId 分类ID
+     * @param state 文章状态
+     * @return 分页结果
+     */
     @GetMapping("/selectlist")
     public Result<PageBean<Article>> selectlist(
             Integer pageNum,
@@ -62,6 +71,12 @@ public class ArticleController {
         return Result.success(pb);
     }
 
+    /**
+     * 上传文件
+     * @param upfile
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/upload")
     public  Result<String> file(MultipartFile upfile) throws Exception {
         log.info("上传文件: {}", upfile);
@@ -75,6 +90,22 @@ public class ArticleController {
         String url = OSSUtils.uploadFile(s, upfile.getInputStream());
 
         return Result.success(url);
+    }
+    /**
+     * 根据文章ID删除文章
+     * @param id 文章ID
+     * @return 操作结果
+     */
+    @DeleteMapping
+    public Result deleteArticle(@RequestParam Integer id){
+
+        log.info("删除文章，ID: {}", id);
+        try{
+            articleService.deleteArticle( id);
+            return Result.success("删除文章成功");
+        }catch (Exception e){
+            return Result.error(e.getMessage());
+        }
     }
 
 }

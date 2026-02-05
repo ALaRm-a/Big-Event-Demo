@@ -30,4 +30,10 @@ public interface CategoryService {
      * @param category 分类对象
      */
     void updateCategory(Category category);
+
+    /**
+     * 根据分类名称删除分类
+     * @param categoryName 分类名称
+     */
+    void deleteCategoryByName(String categoryName);
 }
