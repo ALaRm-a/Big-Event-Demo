@@ -18,4 +18,28 @@
         </where>
     </select>
 
+    <!-- 动态SQL更新文章 -->
+    <update id="updateArticle">
+        UPDATE article
+        <set>
+            update_time = now(),
+            <if test="article.title != null and article.title != ''">
+                title = #{article.title},
+            </if>
+            <if test="article.content != null and article.content != ''">
+                content = #{article.content},
+            </if>
+            <if test="article.coverImg != null and article.coverImg != ''">
+                cover_img = #{article.coverImg},
+            </if>
+            <if test="article.state != null and article.state != ''">
+                state = #{article.state},
+            </if>
+            <if test="article.categoryId != null">
+                category_id = #{article.categoryId},
+            </if>
+        </set>
+        WHERE id = #{article.id} AND create_user = #{userId}
+    </update>
+
 </mapper>

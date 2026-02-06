@@ -48,4 +48,11 @@ public interface ArticleMapper {
      */
     @Delete("DELETE FROM article WHERE id = #{id} AND create_user = #{userId}")
     void deleteByIdAndUserId(@Param("id") Integer id, @Param("userId") Integer userId);
+
+    /**
+     * 更新文章
+     * @param article 文章对象
+     * @param userId 用户ID
+     */
+    void updateArticle(@Param("article") Article article, @Param("userId") Integer userId);
 }

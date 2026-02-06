@@ -50,6 +50,25 @@ public class ArticleController {
     }
 
     /**
+     * 更新文章
+     * @param article 文章对象
+     * @return 操作结果
+     */
+    @PutMapping("/json")
+    public Result updateArticle(@RequestBody @Validated Article article) {
+        log.info("更新文章: {}", article);
+
+        try {
+            articleService.updateArticle(article);
+            log.info("文章更新成功");
+            return Result.success();
+        } catch (Exception e) {
+            log.error("文章更新失败: {}", e.getMessage());
+            return Result.error(e.getMessage());
+        }
+    }
+
+    /**
      *  根据前台的页面大小，页面显示的数量，文章分类和状态来获取文章列表
      * @param pageNum 页码
      * @param pageSize 每页大小

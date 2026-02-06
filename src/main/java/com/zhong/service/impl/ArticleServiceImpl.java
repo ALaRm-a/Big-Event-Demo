@@ -77,4 +77,24 @@ public class ArticleServiceImpl implements ArticleService {
         // 调用Mapper删除数据
         articleMapper.deleteByIdAndUserId(id, userId);
     }
+
+    @Override
+    public void updateArticle(Article article) {
+        // 从ThreadLocal中获取用户信息
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer userId = (Integer) claims.get("id");
+
+        // 验证文章是否存在且属于当前用户
+        Article existingArticle = articleMapper.findById(article.getId());
+        if (existingArticle == null) {
+            throw new RuntimeException("文章不存在");
+        }
+
+        if (!existingArticle.getCreateUser().equals(userId)) {
+            throw new RuntimeException("无权修改该文章");
+        }
+
+        // 调用Mapper更新数据
+        articleMapper.updateArticle(article, userId);
+    }
 }

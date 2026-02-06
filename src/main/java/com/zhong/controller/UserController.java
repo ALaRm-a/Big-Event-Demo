@@ -86,7 +86,7 @@ public class UserController {
     }
 */
 
-    @GetMapping("/userinfo")
+    @GetMapping("/userInfo")
     public Result<User> getUserInfo(){
 
         // 获取token并解析得到username
@@ -153,8 +153,6 @@ public class UserController {
 
         log.info("用户密码更新成功");
         return Result.success();
-
-
     }
 
 
